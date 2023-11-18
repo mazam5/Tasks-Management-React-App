@@ -17,6 +17,7 @@ function TasksList() {
       setCompletedTasks(newTasks);
     }
   };
+
   const handleCompleteTask = (index) => {
     const newTasks = [...pendingTasks];
     setCompletedTasks([...completedTasks, newTasks[index]]);
@@ -54,7 +55,7 @@ function TasksList() {
             {pendingTasks.map((task, index) => (
               <Card
                 key={index}
-                className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-4"
+                className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-2"
               >
                 <input
                   type="checkbox"
@@ -64,9 +65,9 @@ function TasksList() {
                 />
                 <div>
                   <h2 className="my-2 text-xl font-bold">{task.title}</h2>
-                  <div className="flex justify-around">
+                  <div className="flex justify-around max-md:flex-col">
                     <div
-                      className={`mx-2 flex h-10 w-32 items-center justify-center rounded-xl p-2 text-white ${
+                      className={`mx-2 flex h-10 w-36 items-center justify-center rounded-xl p-2 text-white ${
                         task.priority === "High"
                           ? "bg-red-400"
                           : task.priority === "Medium"
@@ -79,7 +80,7 @@ function TasksList() {
                       </span>
                       <p>{task.priority}</p>
                     </div>
-                    <div className="mx-2 flex h-10 items-center justify-center rounded-xl bg-green-500 p-2">
+                    <div className="mx-2 flex h-10 w-36 items-center justify-center rounded-xl bg-green-500 p-2 max-md:mt-2">
                       <span className="material-symbols-outlined text-white">
                         schedule
                       </span>
@@ -110,15 +111,15 @@ function TasksList() {
             {completedTasks.map((task, index) => (
               <Card
                 key={index}
-                className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-4"
+                className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-3"
               >
                 <div className="ml-3">
                   <h2 className="my-2 text-xl font-bold">
                     <del>{task.title}</del>
                   </h2>
-                  <div className="flex justify-around">
+                  <div className="flex justify-around max-md:flex-col">
                     <div
-                      className={`mx-2 flex h-10 w-32 items-center justify-center rounded-xl p-2 text-white ${
+                      className={`mx-2 flex h-10 w-36 items-center justify-center rounded-xl p-2 text-white ${
                         task.priority === "High"
                           ? "bg-red-300"
                           : task.priority === "Medium"
@@ -131,7 +132,7 @@ function TasksList() {
                       </span>
                       <p>{task.priority}</p>
                     </div>
-                    <div className="mx-2 flex h-10 items-center justify-center rounded-xl bg-green-300 p-2">
+                    <div className="mx-2 flex h-10 w-36 items-center justify-center rounded-xl bg-green-300 p-2 max-md:mt-2">
                       <span className="material-symbols-outlined text-white">
                         schedule
                       </span>

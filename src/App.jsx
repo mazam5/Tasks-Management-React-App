@@ -5,8 +5,8 @@ import AppContext from "./context/AppContext";
 import { initialCompleted, initialPending } from "./data/data";
 
 function App() {
-  const [pendingTasks, setPendingTasks] = useState([initialPending]);
-  const [completedTasks, setCompletedTasks] = useState([initialCompleted]);
+  const [pendingTasks, setPendingTasks] = useState(initialPending);
+  const [completedTasks, setCompletedTasks] = useState(initialCompleted);
   const [newTask, setNewTask] = useState({});
 
   const handleAddTask = (e) => {
