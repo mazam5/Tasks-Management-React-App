@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["Low", "Medium", "High"]
+    },
+    "description": {
+      "type": "string"
+    }
+  }
+}
