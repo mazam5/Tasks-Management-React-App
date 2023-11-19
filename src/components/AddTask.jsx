@@ -10,7 +10,14 @@ import schema from "../json/schema.json";
 import uischema from "../json/uischema.json";
 
 function AddTask() {
-  const { handleAddTask, newTask, setNewTask } = useContext(AppContext);
+  const { newTask, setNewTask, setPendingTasks, pendingTasks } =
+    useContext(AppContext);
+
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    setPendingTasks([...pendingTasks, newTask]);
+    setNewTask({});
+  };
 
   return (
     <div className="mx-3 rounded-xl bg-gray-100 p-5 max-md:mx-1 max-md:w-full">

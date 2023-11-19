@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddTask from "./components/AddTask";
-import TasksList from "./components/AllTasks";
+import TasksList from "./components/TasksList";
 import AppContext from "./context/AppContext";
 import { initialCompleted, initialPending } from "./data/data";
 
@@ -8,16 +8,6 @@ function App() {
   const [pendingTasks, setPendingTasks] = useState(initialPending);
   const [completedTasks, setCompletedTasks] = useState(initialCompleted);
   const [newTask, setNewTask] = useState({});
-  const [search, setSearch] = useState("");
-
-  const [filter1, setFilter1] = useState(pendingTasks);
-  const [filter2, setFilter2] = useState(completedTasks);
-
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    setPendingTasks([...pendingTasks, newTask]);
-    setNewTask({});
-  };
 
   return (
     <AppContext.Provider
@@ -26,15 +16,8 @@ function App() {
         setPendingTasks,
         completedTasks,
         setCompletedTasks,
-        filter1,
-        setFilter1,
-        filter2,
-        setFilter2,
-        search,
-        setSearch,
         newTask,
         setNewTask,
-        handleAddTask,
       }}
     >
       <h2 className="ml-5 mt-5 text-3xl font-bold max-md:mb-5">

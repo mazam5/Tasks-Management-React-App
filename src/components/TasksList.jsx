@@ -1,20 +1,15 @@
-import { Card } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/AppContext";
+import { Card } from "@mui/material";
 
 function TasksList() {
-  const {
-    pendingTasks,
-    setPendingTasks,
-    setCompletedTasks,
-    completedTasks,
-    filter1,
-    setFilter1,
-    filter2,
-    setFilter2,
-    search,
-    setSearch,
-  } = useContext(AppContext);
+  const { pendingTasks, setPendingTasks, setCompletedTasks, completedTasks } =
+    useContext(AppContext);
+
+  const [search, setSearch] = useState("");
+  const [pendingFilter, setPendingFilter] = useState(pendingTasks);
+  const [completedFilter, setCompletedFilter] = useState(completedTasks);
+  const [hoverIndex, setHoverIndex] = useState(null);
 
   const handleCompleteTask = (index) => {
     const newTasks = [...pendingTasks];
@@ -36,34 +31,25 @@ function TasksList() {
   };
 
   useEffect(() => {
-    setFilter1(pendingTasks);
-    setFilter2(completedTasks);
-  }, [pendingTasks, completedTasks, setFilter1, setFilter2]);
+    const filteredPendingTasks = pendingTasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(search.toLowerCase()) ||
+        task.description.toLowerCase().includes(search.toLowerCase()),
+    );
+    setPendingFilter(filteredPendingTasks);
 
-  useEffect(() => {
-    const debounceFilter = setTimeout(() => {
-      const filteredResult1 = filter1.filter((item) => {
-        const { title, description } = item;
-        const lowerSearch = search.toLowerCase().trim();
-        return (
-          title.toLowerCase().includes(lowerSearch) ||
-          description.toLowerCase().includes(lowerSearch)
-        );
-      });
-      setFilter1(filteredResult1);
-      const filteredResult2 = filter2.filter((item) => {
-        const { title, description } = item;
-        const lowerSearch = search.toLowerCase().trim();
-        return (
-          title.toLowerCase().includes(lowerSearch) ||
-          description.toLowerCase().includes(lowerSearch)
-        );
-      });
-      setFilter2(filteredResult2);
-    }, 300);
+    const filteredCompletedTasks = completedTasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(search.toLowerCase()) ||
+        task.description.toLowerCase().includes(search.toLowerCase()),
+    );
+    setCompletedFilter(filteredCompletedTasks);
 
-    return () => clearTimeout(debounceFilter);
-  }, [filter1, filter2, search, setFilter1, setFilter2]);
+    if (search === "") {
+      setPendingFilter(pendingTasks);
+      setCompletedFilter(completedTasks);
+    }
+  }, [search, pendingTasks, completedTasks]);
 
   return (
     <div className="rounded-xl bg-gray-100 p-5 max-md:mx-1 max-md:my-5 max-md:w-full">
@@ -72,9 +58,9 @@ function TasksList() {
         <div className="flex items-center justify-between">
           <button
             onClick={() => {
+              setPendingTasks(pendingTasks);
+              setCompletedTasks(completedTasks);
               setSearch("");
-              setFilter1(pendingTasks);
-              setFilter2(completedTasks);
             }}
             className="mx-2 rounded-full p-2 hover:bg-gray-200 hover:text-red-500"
           >
@@ -90,31 +76,42 @@ function TasksList() {
           />
         </div>
       </div>
-      {filter1.length > 0 && (
+      {pendingFilter.length > 0 && (
         <div>
           <h2 className="mt-5 text-xl font-bold">
             Pending{" "}
-            <span className="rounded-full bg-gray-300 px-4 py-2 text-gray-500">
-              {filter1.filter((task) => !task.completed).length}
+            <span className="rounded-full bg-gray-300 px-3 text-gray-500">
+              {pendingFilter.filter((task) => !task.completed).length}
             </span>
           </h2>
           <div className="grid grid-cols-2 max-md:grid-cols-1">
-            {filter1.map((task, index) => (
+            {pendingFilter.map((task, index) => (
               <Card
                 key={index}
-                className="mx-2 my-4 flex max-h-full justify-between gap-3 rounded-xl bg-gray-200 p-2"
+                sx={{}}
+                className="mx-2 my-4 flex max-h-full cursor-pointer justify-between gap-3 rounded-xl bg-gray-200 p-2"
               >
-                <input
-                  type="checkbox"
-                  className="mr-3 hover:bg-red-500"
-                  checked={task.completed}
-                  onChange={() => handleCompleteTask(index)}
-                />
-                <div>
-                  <h2 className="my-2 text-xl font-bold">{task.title}</h2>
+                <div
+                  className="ml-3"
+                  onClick={() => handleCompleteTask(index)}
+                  onMouseEnter={() => setHoverIndex(index)}
+                  onMouseLeave={() => setHoverIndex(null)}
+                >
+                  <h2 className="my-2 flex items-center text-xl font-bold">
+                    {hoverIndex === index ? (
+                      <span className="material-symbols-outlined mr-3">
+                        check_circle
+                      </span>
+                    ) : (
+                      <span className="material-symbols-outlined mr-3">
+                        radio_button_unchecked
+                      </span>
+                    )}
+                    {task.title}
+                  </h2>
                   <div className="flex justify-around max-md:flex-col">
                     <div
-                      className={`mx-2 flex h-10 w-36 items-center justify-center rounded-xl p-2 text-white ${
+                      className={`m-2 flex h-10 w-36 items-center justify-center rounded-xl p-2 text-white ${
                         task.priority === "High"
                           ? "bg-red-400"
                           : task.priority === "Medium"
@@ -127,19 +124,16 @@ function TasksList() {
                       </span>
                       <p>{task.priority}</p>
                     </div>
-                    <div className="mx-2 flex h-10 w-36 items-center justify-center rounded-xl bg-green-500 p-2 max-md:mt-2">
+                    <div className="m-2 flex h-10 w-36 items-center justify-center rounded-xl bg-green-500 p-2 max-md:mt-2">
                       <span className="material-symbols-outlined text-white">
                         schedule
                       </span>
                       <p className="ml-2 text-white">{task.dueDate}</p>
                     </div>
                   </div>
-                  <p className="mt-3 text-gray-500">{task.description}</p>
+                  <p className="my-1 text-gray-500">{task.description}</p>
                 </div>
-                <button
-                  onClick={() => handleDeleteTask(index, "pending")}
-                  className="md:mr-10 md:pr-14"
-                >
+                <button onClick={() => handleDeleteTask(index, "pending")}>
                   <span className="material-symbols-outlined rounded-full p-2 hover:bg-gray-200 hover:text-red-500">
                     delete
                   </span>
@@ -149,24 +143,30 @@ function TasksList() {
           </div>
         </div>
       )}
-      {filter2.length > 0 && (
+
+      {completedFilter.length > 0 && (
         <div>
           <h2 className="mt-5 text-xl font-bold">
             Completed{" "}
             <span className="rounded-full bg-gray-300 px-4 py-2 text-gray-500">
-              {filter2.filter((task) => task).length}
+              {completedFilter.filter((task) => task).length}
             </span>
           </h2>
           <div className="grid grid-cols-2 max-md:grid-cols-1">
-            {filter2.map((task, index) => (
+            {completedFilter.map((task, index) => (
               <Card
                 key={index}
                 className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-3"
               >
                 <div className="ml-3">
-                  <h2 className="my-2 text-xl font-bold">
-                    <del>{task.title}</del>
-                  </h2>
+                  <div className="flex items-center">
+                    <span className="material-symbols-outlined mr-3">
+                      check_circle
+                    </span>
+                    <h2 className="my-2 text-xl font-bold">
+                      <del>{task.title}</del>
+                    </h2>
+                  </div>
                   <div className="flex justify-around max-md:flex-col">
                     <div
                       className={`mx-2 flex h-10 w-36 items-center justify-center rounded-xl p-2 text-white ${
