@@ -41,6 +41,13 @@ yarn install
 ```
 
 ## Demo
+![Demo_Video](./demo/tasks-demo.mp4)
+
+![https://drive.google.com/file/d/1DZxV8yod0YFGo6a9BKTHGPYvdGuLU-Nk/view?usp=sharing](https://drive.google.com/file/d/1DZxV8yod0YFGo6a9BKTHGPYvdGuLU-Nk/view?usp=sharing)
+
+https://github.com/mazam5/Tasks-Management-React-App/assets/33384508/34fc0b9f-39d1-44d8-b11f-ebd04da4137d
+
+
 
 You can view a live demo of this app here: [https://azam-tasks-react-app.netlify.app/](https://azam-tasks-react-app.netlify.app/)
 
