@@ -8,6 +8,10 @@ function App() {
   const [pendingTasks, setPendingTasks] = useState(initialPending);
   const [completedTasks, setCompletedTasks] = useState(initialCompleted);
   const [newTask, setNewTask] = useState({});
+  const [search, setSearch] = useState("");
+
+  const [filter1, setFilter1] = useState(pendingTasks);
+  const [filter2, setFilter2] = useState(completedTasks);
 
   const handleAddTask = (e) => {
     e.preventDefault();
@@ -22,6 +26,12 @@ function App() {
         setPendingTasks,
         completedTasks,
         setCompletedTasks,
+        filter1,
+        setFilter1,
+        filter2,
+        setFilter2,
+        search,
+        setSearch,
         newTask,
         setNewTask,
         handleAddTask,

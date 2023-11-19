@@ -1,10 +1,27 @@
 import { Card } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AppContext from "../context/AppContext";
 
 function TasksList() {
-  const { pendingTasks, setPendingTasks, setCompletedTasks, completedTasks } =
-    useContext(AppContext);
+  const {
+    pendingTasks,
+    setPendingTasks,
+    setCompletedTasks,
+    completedTasks,
+    filter1,
+    setFilter1,
+    filter2,
+    setFilter2,
+    search,
+    setSearch,
+  } = useContext(AppContext);
+
+  const handleCompleteTask = (index) => {
+    const newTasks = [...pendingTasks];
+    setCompletedTasks([...completedTasks, newTasks[index]]);
+    newTasks.splice(index, 1);
+    setPendingTasks(newTasks);
+  };
 
   const handleDeleteTask = (index, task) => {
     if (task === "pending") {
@@ -18,44 +35,74 @@ function TasksList() {
     }
   };
 
-  const handleCompleteTask = (index) => {
-    const newTasks = [...pendingTasks];
-    setCompletedTasks([...completedTasks, newTasks[index]]);
-    newTasks.splice(index, 1);
-    setPendingTasks(newTasks);
-  };
+  useEffect(() => {
+    setFilter1(pendingTasks);
+    setFilter2(completedTasks);
+  }, [pendingTasks, completedTasks, setFilter1, setFilter2]);
+
+  useEffect(() => {
+    const debounceFilter = setTimeout(() => {
+      const filteredResult1 = filter1.filter((item) => {
+        const { title, description } = item;
+        const lowerSearch = search.toLowerCase().trim();
+        return (
+          title.toLowerCase().includes(lowerSearch) ||
+          description.toLowerCase().includes(lowerSearch)
+        );
+      });
+      setFilter1(filteredResult1);
+      const filteredResult2 = filter2.filter((item) => {
+        const { title, description } = item;
+        const lowerSearch = search.toLowerCase().trim();
+        return (
+          title.toLowerCase().includes(lowerSearch) ||
+          description.toLowerCase().includes(lowerSearch)
+        );
+      });
+      setFilter2(filteredResult2);
+    }, 300);
+
+    return () => clearTimeout(debounceFilter);
+  }, [filter1, filter2, search, setFilter1, setFilter2]);
 
   return (
     <div className="rounded-xl bg-gray-100 p-5 max-md:mx-1 max-md:my-5 max-md:w-full">
       <div className="items-center justify-between md:flex">
         <h2 className="text-3xl font-bold">Tasks List</h2>
         <div className="flex items-center justify-between">
+          <button
+            onClick={() => {
+              setSearch("");
+              setFilter1(pendingTasks);
+              setFilter2(completedTasks);
+            }}
+            className="mx-2 rounded-full p-2 hover:bg-gray-200 hover:text-red-500"
+          >
+            <span className="material-symbols-outlined">restart_alt</span>
+          </button>
+
           <input
             type="text"
             className="my-3 mr-5 w-full rounded-xl p-2"
             placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
-          <select className="my-3 w-2/3 rounded-xl p-2">
-            <option value="">Select</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
         </div>
       </div>
-      {pendingTasks.length > 0 && (
+      {filter1.length > 0 && (
         <div>
           <h2 className="mt-5 text-xl font-bold">
             Pending{" "}
             <span className="rounded-full bg-gray-300 px-4 py-2 text-gray-500">
-              {pendingTasks.filter((task) => !task.completed).length}
+              {filter1.filter((task) => !task.completed).length}
             </span>
           </h2>
           <div className="grid grid-cols-2 max-md:grid-cols-1">
-            {pendingTasks.map((task, index) => (
+            {filter1.map((task, index) => (
               <Card
                 key={index}
-                className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-2"
+                className="mx-2 my-4 flex max-h-full justify-between gap-3 rounded-xl bg-gray-200 p-2"
               >
                 <input
                   type="checkbox"
@@ -89,7 +136,10 @@ function TasksList() {
                   </div>
                   <p className="mt-3 text-gray-500">{task.description}</p>
                 </div>
-                <button onClick={() => handleDeleteTask(index, "pending")}>
+                <button
+                  onClick={() => handleDeleteTask(index, "pending")}
+                  className="md:mr-10 md:pr-14"
+                >
                   <span className="material-symbols-outlined rounded-full p-2 hover:bg-gray-200 hover:text-red-500">
                     delete
                   </span>
@@ -99,16 +149,16 @@ function TasksList() {
           </div>
         </div>
       )}
-      {completedTasks.length > 0 && (
+      {filter2.length > 0 && (
         <div>
           <h2 className="mt-5 text-xl font-bold">
             Completed{" "}
             <span className="rounded-full bg-gray-300 px-4 py-2 text-gray-500">
-              {completedTasks.filter((task) => task).length}
+              {filter2.filter((task) => task).length}
             </span>
           </h2>
           <div className="grid grid-cols-2 max-md:grid-cols-1">
-            {completedTasks.map((task, index) => (
+            {filter2.map((task, index) => (
               <Card
                 key={index}
                 className="mx-2 my-4 flex justify-between gap-3 rounded-xl bg-gray-200 p-3"
