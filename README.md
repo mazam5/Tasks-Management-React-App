@@ -48,10 +48,13 @@ You can view a live demo of this app here: [https://azam-tasks-react-app.netlify
 
 #### Desktop View
 
-![Desktop View](./screenshots/tasks-desktop-1.png)
-![Desktop View](./screenshots/tasks-desktop-2.png)
+![Desktop View](./screenshots/tasks-desktop-view-1.png)
+![Desktop View](./screenshots/tasks-desktop-view-2.png)
 
 #### Mobile View
+
+![Mobile View](./screenshots/tasks-mobile-view-1.png)
+![Mobile View](./screenshots/tasks-mobile-view-2.png)
 
 ## Packages
 
